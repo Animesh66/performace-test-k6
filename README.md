@@ -6,10 +6,10 @@ To run the smoke test run the following command:
 
 To run the load test run the following command:
 
-`k6 run load_tests/load-test.ts`
+`k6 run load_test/load-test.ts`
 
 To run the performance test run the following command:
 
-`k6 run performance_tests/performance-test.ts`
+`k6 run performance_test/performance-test.ts`
 
 
