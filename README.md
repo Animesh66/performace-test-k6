@@ -2,7 +2,7 @@
 
 To run the smoke test run the following command:
 
-`k6 run smoke_tests/somke-test.ts`
+`k6 run smoke_test/smoke-test.ts`
 
 To run the load test run the following command:
 
