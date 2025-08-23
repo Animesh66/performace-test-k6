@@ -10,6 +10,6 @@ export let options = {
 
 export default function () {
   let res = http.get('https://quickpizza.grafana.com/test.k6.io/');
-  check(res, { 'status was 200': (r) => r.status == 200 });
+  check(res, { 'Status is 200': (r) => r.status === 200 });
   sleep(1)
 }
