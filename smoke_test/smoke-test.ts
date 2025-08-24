@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, group } from 'k6';
 import { Trend } from 'k6/metrics';
-import { Logger } from '../utils/logger';
+import Logger from '../utils/logger';
 
 let contactPageResponseTime = new Trend('contact_page_response_time');
 
@@ -36,13 +36,13 @@ export let options = {
   },
 };
 export function setup() { // This setup function only be called once before the test starts
-  Logger.info('Starting smoke test');
+  Logger.info('Starting smoke test...');
   const data = {name: 'smoke test'}
   return data
 }
 
 export function teardown(data: object) { // This teardown function only be called once after the test ends
-  Logger.info('Finished smoke test');
+  Logger.info('Finished smoke test...');
 }
 
 export default function (data: object) {
