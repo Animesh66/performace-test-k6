@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check, sleep, group } from 'k6';
 import { Trend } from 'k6/metrics';
 
 let contactPageResponseTime = new Trend('contact_page_response_time');
@@ -31,21 +31,30 @@ export let options = {
 };
 
 export default function () {
-  let res = http.get('https://quickpizza.grafana.com/test.k6.io/', {tags: {page: 'homepage'}}); // This is custom tag
-  check(res, { 'Status is 200': (r) => r.status === 200,
-    'Page is QuickPizza Legacy': (r) => r.body?.toString().includes('QuickPizza Legacy') ?? false}, { page: 'homepage' });
-  sleep(1);
-  res = http.get('https://quickpizza.grafana.com/contacts.php', {tags: {page: 'contactpage'}});
+  group('Homepage', function () { // This is defining homepage group and can contain multiple requests which can be grouped together
+    let res = http.get('https://quickpizza.grafana.com/test.k6.io/', {tags: {page: 'homepage'}}); // This is custom tag
+    check(res, { 'Status is 200': (r) => r.status === 200,
+      'Page is QuickPizza Legacy': (r) => r.body?.toString().includes('QuickPizza Legacy') ?? false}, { page: 'homepage' });
+    sleep(1);
+  })
+  group('Contact Page', function () { // This is defining contact page group and can contain multiple requests which can be grouped together
+    let res = http.get('https://quickpizza.grafana.com/contacts.php', {tags: {page: 'contactpage'}});
   check(res, { 'Status is 200': (r) => r.status === 200}, { page: 'contactpage' });
   contactPageResponseTime.add(res.timings.duration,{ page: 'contactpage' }); // Adding custom metrics for contact page response time
-  sleep(1)
-  res = http.get('https://quickpizza.grafana.com/pi.php?decimals=3', {tags: {page: 'pi'}});
+  })
+  group('Pi Page', function () { // This is defining pi page group and can contain multiple requests which can be grouped together
+    let res = http.get('https://quickpizza.grafana.com/pi.php?decimals=3', {tags: {page: 'pi'}});
   check(res, { 'Status is 200': (r) => r.status === 200}, { page: 'pi' });
   sleep(1)
-  res = http.get('https://quickpizza.grafana.com/flip_coin.php', {tags: {page: 'flip_coin'}});
+  })
+  group('Flip Coin Page', function () { // This is defining flip coin page group and can contain multiple requests which can be grouped together
+    let res = http.get('https://quickpizza.grafana.com/flip_coin.php', {tags: {page: 'flip_coin'}});
   check(res, { 'Status is 200': (r) => r.status === 200 }, { page: 'flip_coin' });
   sleep(1)
-  res = http.get('https://quickpizza.grafana.com/browser.php', {tags: {page: 'browser'}});
-  check(res, { 'Status is 200': (r) => r.status === 200 }, { page: 'browser' });
-  sleep(1)
+  })
+  group('Browser Page', function () { // This is defining browser page group and can contain multiple requests which can be grouped together
+    let res = http.get('https://quickpizza.grafana.com/browser.php', {tags: {page: 'browser'}});
+    check(res, { 'Status is 200': (r) => r.status === 200 }, { page: 'browser' });
+    sleep(1)
+  })
 }
