@@ -1,6 +1,7 @@
 import http from 'k6/http';
 import { check, group } from 'k6';
 import { Trend } from 'k6/metrics';
+import { Logger } from '../utils/logger';
 
 let contactPageResponseTime = new Trend('contact_page_response_time');
 
@@ -34,8 +35,17 @@ export let options = {
     'group_duration{group:::Browser Page}': ['p(95)<400', 'p(99)<450', 'max<500'],
   },
 };
+export function setup() { // This setup function only be called once before the test starts
+  Logger.info('Starting smoke test');
+  const data = {name: 'smoke test'}
+  return data
+}
 
-export default function () {
+export function teardown(data: object) { // This teardown function only be called once after the test ends
+  Logger.info('Finished smoke test');
+}
+
+export default function (data: object) {
   group('Home Page', function () { // This is defining homepage group and can contain multiple requests which can be grouped together
     let res = http.get('https://quickpizza.grafana.com/test.k6.io/', {tags: {page: 'homepage'}}); // This is custom tag
     check(res, { 'Status is 200': (r) => r.status === 200,
