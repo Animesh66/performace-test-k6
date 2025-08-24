@@ -5,8 +5,8 @@ export let options = {
   vus: 3,
   duration: '1m',
   thresholds: {
-    http_req_duration: ['p(95)<500', 'p(99)<700'],
-    http_req_failed: ['rate=0.00'],
+    http_req_duration: ['p(95)<400', 'p(99)<500', 'max<500'],
+    http_req_failed: ['rate<0.01'],
     http_reqs: ['count>10'],
     vus: ['value>1'],
   },
