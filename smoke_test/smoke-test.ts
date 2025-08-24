@@ -1,5 +1,8 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { Trend } from 'k6/metrics';
+
+let contactPageResponseTime = new Trend('contact_page_response_time');
 
 export let options = {
   vus: 2,
@@ -10,6 +13,7 @@ export let options = {
     http_reqs: ['count>10'],
     vus: ['value>1'],
     checks: ['rate>0.99'],
+    contact_page_response_time: ['p(95)<300', 'p(99)<350', 'max<500'], // defining custom metrics for contact page response time
   },
 };
 
@@ -20,6 +24,7 @@ export default function () {
   sleep(1);
   res = http.get('https://quickpizza.grafana.com/contacts.php');
   check(res, { 'Status is 200': (r) => r.status === 200});
+  contactPageResponseTime.add(res.timings.duration);
   sleep(1)
   res = http.get('https://quickpizza.grafana.com/pi.php?decimals=3');
   check(res, { 'Status is 200': (r) => r.status === 200});
