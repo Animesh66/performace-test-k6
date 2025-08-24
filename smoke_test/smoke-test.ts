@@ -8,31 +8,44 @@ export let options = {
   vus: 2,
   duration: '30s',
   thresholds: {
-    http_req_duration: ['p(95)<400', 'p(99)<500', 'max<500'],
+    http_req_duration: ['p(95)<400', 'p(99)<500', 'max<500'], // This is custom tag
+    'http_req_duration{page: homepage}': ['p(95)<400', 'p(99)<500', 'max<500'],
+    'http_req_duration{page: contactpage}': ['p(95)<400', 'p(99)<500', 'max<500'],
+    'http_req_duration{page: pi}': ['p(95)<400', 'p(99)<500', 'max<500'],
+    'http_req_duration{page: flip_coin}': ['p(95)<400', 'p(99)<500', 'max<500'],
+    'http_req_duration{page: browser}': ['p(95)<400', 'p(99)<500', 'max<500'],
     http_req_failed: ['rate<0.01'],
+    'http_req_failed{page: contactpage}': ['rate<0.01'],
+    'http_req_failed{page: pi}': ['rate<0.01'],
+    'http_req_failed{page: flip_coin}': ['rate<0.01'],
+    'http_req_failed{page: browser}': ['rate<0.01'],
     http_reqs: ['count>10'],
     vus: ['value>1'],
     checks: ['rate>0.99'],
+    'checks{page: contactpage}': ['rate>0.99'],
+    'checks{page: pi}': ['rate>0.99'],
+    'checks{page: flip_coin}': ['rate>0.99'],
+    'checks{page: browser}': ['rate>0.99'],
     contact_page_response_time: ['p(95)<300', 'p(99)<350', 'max<500'], // defining custom metrics for contact page response time
   },
 };
 
 export default function () {
-  let res = http.get('https://quickpizza.grafana.com/test.k6.io/');
+  let res = http.get('https://quickpizza.grafana.com/test.k6.io/', {tags: {page: 'homepage'}}); // This is custom tag
   check(res, { 'Status is 200': (r) => r.status === 200,
-    'Page is QuickPizza Legacy': (r) => r.body?.toString().includes('QuickPizza Legacy') ?? false});
+    'Page is QuickPizza Legacy': (r) => r.body?.toString().includes('QuickPizza Legacy') ?? false}, { page: 'homepage' });
   sleep(1);
-  res = http.get('https://quickpizza.grafana.com/contacts.php');
-  check(res, { 'Status is 200': (r) => r.status === 200});
-  contactPageResponseTime.add(res.timings.duration);
+  res = http.get('https://quickpizza.grafana.com/contacts.php', {tags: {page: 'contactpage'}});
+  check(res, { 'Status is 200': (r) => r.status === 200}, { page: 'contactpage' });
+  contactPageResponseTime.add(res.timings.duration,{ page: 'contactpage' });
   sleep(1)
-  res = http.get('https://quickpizza.grafana.com/pi.php?decimals=3');
-  check(res, { 'Status is 200': (r) => r.status === 200});
+  res = http.get('https://quickpizza.grafana.com/pi.php?decimals=3', {tags: {page: 'pi'}});
+  check(res, { 'Status is 200': (r) => r.status === 200}, { page: 'pi' });
   sleep(1)
-  res = http.get('https://quickpizza.grafana.com/flip_coin.php');
-  check(res, { 'Status is 200': (r) => r.status === 200 });
+  res = http.get('https://quickpizza.grafana.com/flip_coin.php', {tags: {page: 'flip_coin'}});
+  check(res, { 'Status is 200': (r) => r.status === 200 }, { page: 'flip_coin' });
   sleep(1)
-  res = http.get('https://quickpizza.grafana.com/browser.php');
-  check(res, { 'Status is 200': (r) => r.status === 200 });
+  res = http.get('https://quickpizza.grafana.com/browser.php', {tags: {page: 'browser'}});
+  check(res, { 'Status is 200': (r) => r.status === 200 }, { page: 'browser' });
   sleep(1)
 }
