@@ -37,7 +37,7 @@ export default function () {
   sleep(1);
   res = http.get('https://quickpizza.grafana.com/contacts.php', {tags: {page: 'contactpage'}});
   check(res, { 'Status is 200': (r) => r.status === 200}, { page: 'contactpage' });
-  contactPageResponseTime.add(res.timings.duration,{ page: 'contactpage' });
+  contactPageResponseTime.add(res.timings.duration,{ page: 'contactpage' }); // Adding custom metrics for contact page response time
   sleep(1)
   res = http.get('https://quickpizza.grafana.com/pi.php?decimals=3', {tags: {page: 'pi'}});
   check(res, { 'Status is 200': (r) => r.status === 200}, { page: 'pi' });
