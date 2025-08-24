@@ -2,13 +2,14 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export let options = {
-  vus: 3,
-  duration: '1m',
+  vus: 2,
+  duration: '30s',
   thresholds: {
     http_req_duration: ['p(95)<400', 'p(99)<500', 'max<500'],
     http_req_failed: ['rate<0.01'],
     http_reqs: ['count>10'],
     vus: ['value>1'],
+    checks: ['rate>0.99'],
   },
 };
 
