@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, group } from 'k6';
 import { Trend } from 'k6/metrics';
-import { Logger } from '../utils/logger';
+import { Logger } from '../utils/logger.ts';
 
 let contactPageResponseTime = new Trend('contact_page_response_time');
 
