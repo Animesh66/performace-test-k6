@@ -1,8 +1,11 @@
 {
   "devDependencies": {
     "@types/k6": "^1.2.0",
+    "@types/node": "^22.9.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2",
-    "@types/node": "^22.9.0"
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.56.1"
   }
 }
